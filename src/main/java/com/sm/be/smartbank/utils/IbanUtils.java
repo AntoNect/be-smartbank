@@ -118,9 +118,4 @@ public class IbanUtils {
 		return codNazionale + cinEuropeo + cinItaliano + codAbi + codCab + numConto;
 	}
 
-	public static void main(String[] args) {
-		System.out.println(buildCinItaliano("08327", "38941", "000000172964"));
-		System.out.println(buildCinEuropeo("IT", "08327", "38941", "000000172964"));
-	}
-
 }
