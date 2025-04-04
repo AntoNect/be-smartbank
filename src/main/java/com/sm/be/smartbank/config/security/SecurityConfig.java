@@ -63,7 +63,7 @@ public class SecurityConfig {
 	CorsFilter corsFilter() {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		CorsConfiguration corsConfig = new CorsConfiguration();
-		corsConfig.setAllowedOrigins(List.of("http://localhost:5173"));
+		corsConfig.setAllowedOrigins(List.of("http://localhost:5173", "https://astonishing-flan-a99a74.netlify.app"));
 		corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 		corsConfig.setAllowedHeaders(List.of("Authorization", "Content-Type"));
 		corsConfig.setAllowCredentials(true);
