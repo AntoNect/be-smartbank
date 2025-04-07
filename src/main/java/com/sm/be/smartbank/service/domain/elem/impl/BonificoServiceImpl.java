@@ -59,7 +59,7 @@ public class BonificoServiceImpl implements BonificoService {
 				// successivo
 				bonifico.setDataAccredito(inputData.getDataAddebito().atTime(11, 0, 0).plusDays(1));
 			}
-			bonifico.setCodStato(StatoBonificoEnum.IN_ATTESA.getValue());
+			bonifico.setCodStato(StatoBonificoEnum.PRENOTATO.getValue());
 		} else {
 
 			// bonifico NON istantaneo -> applico la policy dei bonifici NON istantanei
@@ -69,7 +69,7 @@ public class BonificoServiceImpl implements BonificoService {
 				// giornata odierna. Devo procere con il calcolo della prima prossima data
 				// disponibile
 				if (localDateTime.getDayOfWeek().getValue() >= DayOfWeek.THURSDAY.getValue()) {
-
+				/** ..continua **/		
 					// è giovedì, venerdì, sabato o domenica dopo le 16 -> la prima data disponibile
 					// è il lunedì seguente alle ore 11
 					LocalDateTime prossimoLunedi = localDateTime.with(DayOfWeek.MONDAY).plusWeeks(1).withHour(11)
@@ -85,6 +85,7 @@ public class BonificoServiceImpl implements BonificoService {
 					bonifico.setDataAccredito(bonifico.getDataAddebito().plusDays(1));
 
 				}
+				bonifico.setCodStato(StatoBonificoEnum.PRENOTATO.getValue());
 			} else {
 
 				// orario corrente prima delle 16: è possibile effettuare l'addebito nella
@@ -105,8 +106,8 @@ public class BonificoServiceImpl implements BonificoService {
 					bonifico.setDataAccredito(
 							localDateTime.plusDays(1).withHour(11).withMinute(0).withSecond(0).withNano(0));
 				}
+				bonifico.setCodStato(StatoBonificoEnum.IN_ATTESA.getValue());
 			}
-			bonifico.setCodStato(StatoBonificoEnum.IN_ATTESA.getValue());
 		}
 
 		return bonificoRepository.save(bonifico);

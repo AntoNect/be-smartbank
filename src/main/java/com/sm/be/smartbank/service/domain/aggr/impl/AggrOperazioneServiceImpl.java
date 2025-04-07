@@ -51,22 +51,27 @@ public class AggrOperazioneServiceImpl implements AggrOperazioneService {
 	@Override
 	@Transactional
 	public Bonifico setInsertOperazioneBonificoInUscita(BonificoUscitaInputData inputData) {
-		// verifico la validità della struttura dell'iban inserito
+		// verifico la validità dell'iban inserito
 		OperazioneChk.chkIban(inputData.getIbanBeneficiario());
+		// recupero il conto attivo associato all'utente
 		Optional<Conto> optionalConto = contoService.getContoAttivo();
 		if (optionalConto.isEmpty())
-			throw new ChkException("Il conto non è abilitato ad effettuare l'operazione richiesta");
+			throw new ChkException("{esistenza-conto-non-abilitato}");
 		Conto conto = optionalConto.get();
-		if (conto.getIban().equalsIgnoreCase(inputData.getIbanBeneficiario()))
-			throw new ChkException("Non è possibile fare un bonifico al proprio conto");
+		// verifico la disponibiltà del saldo
 		if (conto.getSaldo().compareTo(inputData.getImporto()) < 0)
-			throw new ChkException("Saldo insufficiente");
-		Operazione operazione = operazioneService.setInsertOperazione(conto, OperazioneInputData.builder()
-				.tipoOperazione(TipoOperazioneEnum.BONIFICO_USCITA).importo(inputData.getImporto().negate()).build());
+			throw new ChkException("{esistenza-saldo-insufficiente}");
+		// mi costruisco l'oggetto OperazioneInputData da passare all'operazioneService
+		OperazioneInputData operazioneInputData = OperazioneInputData.builder()
+				.tipoOperazione(TipoOperazioneEnum.BONIFICO_USCITA).importo(inputData.getImporto().negate()).build();
+		// inserisco l'operazione richiamando l'operazioneService
+		Operazione operazione = operazioneService.setInsertOperazione(conto, operazioneInputData);
+		// inserisco il bonifico richiamando il bonificoService
 		Bonifico bonifico = bonificoService.setInsertBonificoInUscita(operazione, inputData);
+		// verifico se la data di addebito corrisponde alla data corrente; altrimenti il
+		// bonifico verrà messo in stato IN ATTESA e se ne occuperà il batch
 		if (bonifico.getDataAddebito().toLocalDate().equals(LocalDate.now())) {
-			// se la data di addebito è la data seguente decremento il saldo dal conto del
-			// mittente
+			// decremento il saldo al mittente
 			contoService.decrementaSaldo(conto.getIdConto(), inputData.getImporto());
 			if (Boolean.TRUE.equals(bonifico.getIstantaneo())) {
 				// il bonifico è instantaneo, pertanto accredito il saldo sul conto del

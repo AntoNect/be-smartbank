@@ -2,7 +2,9 @@ package com.sm.be.smartbank.model.dto.profilo.setinsertprofilo;
 
 import java.time.LocalDate;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,19 +14,20 @@ import lombok.Setter;
 @Builder
 public class SetInsertProfiloRequest {
 
-	@NotNull
+	@NotBlank(message = "Il nome è obbligatorio")
 	private String nome;
 
-	@NotNull
+	@NotBlank(message = "Il cognome è obbligatorio")
 	private String cognome;
 
-	@NotNull
+	@NotBlank(message = "Il codice fiscale è obbligatorio")
 	private String codiceFiscale;
 
-	@NotNull
+	@NotBlank(message = "Il numero di telefono è obbligatorio")
+	@Pattern(regexp = "^\\+?\\d{9,15}$", message = "Il numero di telefono non è valido")
 	private String telefono;
 
-	@NotNull
+	@NotBlank(message = "L'indirizzo è obbligatorio")
 	private String indirizzo;
 
 	@NotNull

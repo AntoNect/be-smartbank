@@ -20,7 +20,7 @@ import com.sm.be.smartbank.model.entity.personale.Utente;
 @Component
 public class AuthUtil {
 
-	private static final long TOKEN_EXPIRATION = 90000; // 15 minuti
+	private static final long TOKEN_EXPIRATION = 900;
 
 	@Value("${security.jwt.secret-key}")
 	private String jwtSecretKey;
