@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.sm.be.smartbank.config.exception.custom.ChkException;
 import com.sm.be.smartbank.config.security.AuthUtil;
+import com.sm.be.smartbank.model.bo.CoordinateBancarieBO;
 import com.sm.be.smartbank.model.bo.DashBoardBO;
 import com.sm.be.smartbank.model.entity.personale.Conto;
 import com.sm.be.smartbank.model.entity.personale.Profilo;
@@ -58,6 +59,29 @@ public class ContoServiceImpl implements ContoService {
 
 		String username = authUtil.getUsername();
 		return contoRepository.findByUsername(username);
+	}
+
+	@Override
+	public CoordinateBancarieBO getCoordinateBancarie() {
+
+		Optional<Conto> optionalConto = getContoAttivo();
+		if (optionalConto.isEmpty())
+			return CoordinateBancarieBO.builder().build();
+		else {
+			Conto conto = optionalConto.get();
+			String iban = conto.getIban();
+
+			String codNazionale = iban.substring(0, 2);
+			String cinEuropeo = iban.substring(2, 4);
+
+			String cin = iban.substring(4, 5);
+			String abi = iban.substring(5, 10);
+			String cab = iban.substring(10, 15);
+			String numConto = iban.substring(15);
+
+			return CoordinateBancarieBO.builder().iban(iban).codNazionale(codNazionale).cinEuropeo(cinEuropeo).cin(cin)
+					.abi(abi).cab(cab).numConto(numConto).build();
+		}
 	}
 
 	@Override

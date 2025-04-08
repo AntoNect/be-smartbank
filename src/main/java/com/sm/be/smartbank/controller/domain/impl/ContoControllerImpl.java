@@ -9,10 +9,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sm.be.smartbank.controller.domain.ContoController;
 import com.sm.be.smartbank.mapper.bo.carta.CartaMapper;
+import com.sm.be.smartbank.mapper.bo.conto.ContoMapper;
 import com.sm.be.smartbank.mapper.bo.profilo.ProfiloMapper;
 import com.sm.be.smartbank.model.bo.CartaBO;
+import com.sm.be.smartbank.model.bo.CoordinateBancarieBO;
 import com.sm.be.smartbank.model.bo.DashBoardBO;
 import com.sm.be.smartbank.model.dto.profilo.getcartaattiva.GetCartaAttivaResponse;
+import com.sm.be.smartbank.model.dto.profilo.getcoordinatebancarie.GetCoordinateBancarieResponse;
 import com.sm.be.smartbank.model.dto.profilo.getdashboard.GetDashboardResponse;
 import com.sm.be.smartbank.service.domain.elem.CartaService;
 import com.sm.be.smartbank.service.domain.elem.ContoService;
@@ -44,6 +47,15 @@ public class ContoControllerImpl implements ContoController {
 		CartaMapper mapper = Mappers.getMapper(CartaMapper.class);
 		CartaBO carta = cartaService.getCartaAttiva();
 		return ResponseEntity.ok(mapper.toGetCartaAttivaResponse(carta));
+	}
+
+	@Override
+	@GetMapping("/coordinate-bancarie")
+	public ResponseEntity<GetCoordinateBancarieResponse> getCoordinateBancarie() {
+
+		ContoMapper mapper = Mappers.getMapper(ContoMapper.class);
+		CoordinateBancarieBO conto = contoService.getCoordinateBancarie();
+		return ResponseEntity.ok(mapper.toGetCoordinateBancarieResponse(conto));
 	}
 
 }
