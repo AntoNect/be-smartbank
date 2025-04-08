@@ -114,7 +114,7 @@ public class ContoServiceImpl implements ContoService {
 
 		Conto conto = optionalConto.get();
 
-		LocalDate dataFine = LocalDate.now();
+		LocalDate dataFine = LocalDate.now().plusDays(1);
 		LocalDate dataInizio = dataFine.plusMonths(-1);
 
 		BigDecimal totEntrate = operazioneService.getImportoEntrateNelPerioByIdConto(conto.getIdConto(), dataInizio,
@@ -125,7 +125,7 @@ public class ContoServiceImpl implements ContoService {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		return DashBoardBO.builder().saldo(conto.getSaldo()).totEntrateUltimoMese(totEntrate)
 				.totUsciteUltimeMese(totUscite).dataInizioUltimoMese(dataInizio.format(formatter))
-				.dataFineUltimoMese(dataFine.format(formatter)).build();
+				.dataFineUltimoMese(dataFine.plusDays(-1).format(formatter)).build();
 	}
 
 	private String generateNumeroRapporto() {
